@@ -42,7 +42,10 @@ function seoFilesPlugin() {
 
       // ── sitemap.xml ──
       const urls = SITEMAP_ROUTES.map((route) => {
-        const loc = route === '' ? `${SITE_URL}/` : `${SITE_URL}/${route}`
+        // Trailing slash is not cosmetic. Each route is a directory index, and
+        // Cloudflare 308s /about to /about/. Listing the unslashed form would
+        // point both the sitemap and the canonical at a redirect.
+        const loc = route === '' ? `${SITE_URL}/` : `${SITE_URL}/${route}/`
         // The homepage is the tool itself; the supporting pages are near-static.
         const priority = route === '' ? '1.0' : '0.6'
         const changefreq = route === '' ? 'daily' : 'monthly'
@@ -133,7 +136,7 @@ ${urls}
           )
           .replace(
             /<link rel="canonical" href="[^"]*"\s*\/?>/,
-            `<link rel="canonical" href="${SITE_URL}/${route}" />`,
+            `<link rel="canonical" href="${SITE_URL}/${route}/" />`,
           )
       }
 

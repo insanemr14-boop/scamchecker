@@ -362,10 +362,10 @@ function SiteFooter() {
     <footer className="border-t border-hairline bg-canvas px-4 py-6 text-sm text-muted">
       <div className="mx-auto max-w-6xl space-y-4">
         <nav aria-label="Footer" className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end sm:gap-x-6 sm:gap-y-2">
-          <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/about">About us</a>
-          <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/privacy">Privacy policy</a>
-          <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/terms">Terms &amp; conditions</a>
-          <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/contact">Contact us</a>
+          <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/about/">About us</a>
+          <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/privacy/">Privacy policy</a>
+          <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/terms/">Terms &amp; conditions</a>
+          <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/contact/">Contact us</a>
         </nav>
         <div className="border-t border-hairline pt-4">
           <p className="text-xs leading-5">Built to help you pause, verify, and browse more safely. Results are automated signals — not a legal verdict. Always verify independently before sharing personal or financial information.</p>
@@ -414,7 +414,7 @@ function InfoPage({ kind, theme, setTheme }) {
       const el = document.createElement('link')
       el.setAttribute('rel', 'canonical')
       return el
-    }, `${SITE_URL}/${kind}`)
+    }, `${SITE_URL}/${kind}/`)
 
     // Error pages must never be indexed, whatever robots.txt says — a soft 404
     // that ranks is worse than one that does not exist.
@@ -452,7 +452,7 @@ function InfoPage({ kind, theme, setTheme }) {
             <a href="/" className="inline-flex rounded-lg bg-ink px-5 py-3 text-sm font-medium text-on-primary hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">
               ← Back to home
             </a>
-            <a href="/contact" className="inline-flex rounded-lg border border-hairline bg-surface px-5 py-3 text-sm font-medium text-ink hover:bg-surface-raised focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+            <a href="/contact/" className="inline-flex rounded-lg border border-hairline bg-surface px-5 py-3 text-sm font-medium text-ink hover:bg-surface-raised focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">
               Report this issue
             </a>
           </div>
@@ -673,7 +673,7 @@ export default function App() {
             <span className="text-sm sm:text-base">Scam<span className="text-brand">Checker</span></span>
           </a>
           <nav className="flex items-center gap-1 sm:gap-3">
-            <a href="/how-it-works" className="hidden rounded-lg px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink sm:inline-flex">How it works</a>
+            <a href="/how-it-works/" className="hidden rounded-lg px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink sm:inline-flex">How it works</a>
             <a href="#main" className="hidden rounded-lg px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink sm:inline-flex">Check a site</a>
             <span className="hidden h-4 w-px bg-hairline sm:block" />
             <span className="hidden rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs font-medium text-success sm:inline-flex">Free Tool</span>
