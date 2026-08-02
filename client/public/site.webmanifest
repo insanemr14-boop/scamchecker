@@ -1,0 +1,18 @@
+{
+  "name": "Scam Website Checker",
+  "short_name": "ScamChecker",
+  "description": "Check if a website is legit or a scam — free, no sign-up. Analyses domain age, SSL, DNS, threat databases, Reddit reports and web reputation.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0B1220",
+  "theme_color": "#3b82f6",
+  "lang": "en",
+  "categories": ["utilities", "security"],
+  "icons": [
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
+  ]
+}

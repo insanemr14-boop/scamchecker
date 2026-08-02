@@ -1,0 +1,50 @@
+# Cloudflare Pages response headers.
+#
+# Syntax: a path pattern on its own line, followed by indented "Header: value"
+# lines. Vite copies this file from client/public into dist/ untouched.
+
+/*
+  # Clickjacking. A tool people paste suspicious URLs into is exactly the sort
+  # of page an attacker would want to frame.
+  X-Frame-Options: DENY
+  # Stops browsers MIME-sniffing a response into something executable.
+  X-Content-Type-Options: nosniff
+  # Send the origin to third parties, the full URL only to ourselves — so a
+  # scanned domain never leaks in a Referer header to an external site.
+  Referrer-Policy: strict-origin-when-cross-origin
+  # Nothing here needs any of these.
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Cross-Origin-Opener-Policy: same-origin
+  X-DNS-Prefetch-Control: on
+
+  # Content Security Policy — every origin below is one the app genuinely uses:
+  #   googletagmanager.com          gtag.js
+  #   *.google-analytics.com        GA beacons
+  #   fonts.googleapis.com          the Inter stylesheet
+  #   fonts.gstatic.com             the font files themselves
+  #   scam-checker-api...workers.dev  the check API, including its SSE stream
+  #
+  # 'unsafe-inline' is required in script-src by the inline gtag config block,
+  # and in style-src because React sets inline styles. If you ever change
+  # VITE_API_BASE_URL, connect-src below must be updated to match or every scan
+  # will fail silently with a CSP violation in the console.
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com; connect-src 'self' https://scam-checker-api.techgarg0.workers.dev https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com
+
+# Vite fingerprints everything in /assets, so the filename changes whenever the
+# content does. That makes it safe to cache permanently.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Icons and the social card change rarely but keep stable names, so cache them
+# for a day rather than forever.
+/*.png
+  Cache-Control: public, max-age=86400
+/favicon.svg
+  Cache-Control: public, max-age=86400
+
+# These must stay fresh: they are how crawlers discover the site.
+/robots.txt
+  Cache-Control: public, max-age=3600
+/sitemap.xml
+  Cache-Control: public, max-age=3600

@@ -4,6 +4,7 @@ import {
   Database, ExternalLink, Globe2, Info, Loader2, LockKeyhole,
   MessageSquare, Moon, Search, ShieldCheck, ShieldAlert, Sun, XCircle
 } from 'lucide-react'
+import { PAGE_ROUTES, ROUTE_META } from './routes.js'
 import './App.css'
 
 const CHECK_TYPES = [
@@ -20,6 +21,12 @@ const EXAMPLES = ['amazon.com', 'github.com', 'google.com']
 // Deployed Cloudflare Worker URL — env-overridable via VITE_API_BASE_URL.
 // Fallback to the Worker URL so the production bundle always hits the API.
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://scam-checker-api.techgarg0.workers.dev/api'
+
+// Canonical origin, no trailing slash. Must match the value vite.config.js
+// bakes into index.html, robots.txt and sitemap.xml — set VITE_SITE_URL once
+// and every surface follows. Hardcoding a domain in markup is what left the
+// canonical pointing at a domain that does not resolve.
+const SITE_URL = (import.meta.env.VITE_SITE_URL || 'https://riocloud.dpdns.org').replace(/\/+$/, '')
 
 const PENALTY = { dangerous: 35, warning: 15 }
 const ASSESSED = new Set(['safe', 'warning', 'dangerous'])
@@ -379,6 +386,47 @@ function InfoPage({ kind, theme, setTheme }) {
     '500': { eyebrow: 'Error 500', title: 'Something went wrong on our end.', intro: 'The server hit an unexpected error while handling your request. The issue has been logged and we are looking into it.', sections: [['Try again', 'Most temporary errors clear within a minute. Refresh the page or return to the home page and try again.'], ['Still broken?', 'If the error keeps happening, please report it via the contact page and include the time, the page you were on, and what you were trying to do.']] },
   }[kind]
 
+  // index.html ships the homepage's title, description and canonical. Without
+  // this, all six routes would serve those same tags and read to a crawler as
+  // duplicates of the homepage.
+  useEffect(() => {
+    const meta = ROUTE_META[kind]
+    if (!meta) return
+
+    document.title = meta.title
+
+    const setTag = (selector, create, value) => {
+      let el = document.head.querySelector(selector)
+      if (!el) {
+        el = create()
+        document.head.appendChild(el)
+      }
+      el.setAttribute(el.tagName === 'LINK' ? 'href' : 'content', value)
+    }
+
+    setTag('meta[name="description"]', () => {
+      const el = document.createElement('meta')
+      el.setAttribute('name', 'description')
+      return el
+    }, meta.description)
+
+    setTag('link[rel="canonical"]', () => {
+      const el = document.createElement('link')
+      el.setAttribute('rel', 'canonical')
+      return el
+    }, `${SITE_URL}/${kind}`)
+
+    // Error pages must never be indexed, whatever robots.txt says — a soft 404
+    // that ranks is worse than one that does not exist.
+    if (kind === '404' || kind === '500') {
+      setTag('meta[name="robots"]', () => {
+        const el = document.createElement('meta')
+        el.setAttribute('name', 'robots')
+        return el
+      }, 'noindex, follow')
+    }
+  }, [kind])
+
   return (
     <div className="min-h-screen bg-canvas text-ink">
       <SiteHeader theme={theme} setTheme={setTheme} />
@@ -601,7 +649,13 @@ export default function App() {
         : UNSCORED
   const VerdictIcon = presentation?.icon
   const page = window.location.pathname.replace(/^\/+|\/+$/g, '')
-  if (['about', 'privacy', 'terms', 'contact', 'how-it-works', '404', '500'].includes(page)) return <InfoPage kind={page} theme={theme} setTheme={setTheme} />
+  // Anything that is not the homepage and not a known route renders the 404
+  // page. This is what makes dist/404.html — which Cloudflare serves with a
+  // real 404 status for unmatched paths — show the error page rather than a
+  // copy of the homepage.
+  if (page !== '') {
+    return <InfoPage kind={PAGE_ROUTES.includes(page) ? page : '404'} theme={theme} setTheme={setTheme} />
+  }
 
   return (
     // overflow-x:clip, not hidden — `hidden` forces overflow-y to auto, making

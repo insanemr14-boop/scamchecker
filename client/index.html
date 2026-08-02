@@ -2,12 +2,29 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="icon" type="image/png" href="/favicon.png" sizes="96x96" />
+
+    <!-- Icons. The SVG is preferred by modern browsers and stays sharp at any
+         size; the PNGs are the fallback and the iOS home-screen icon. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- App.jsx updates this on theme change; without the tag that was a no-op. -->
     <meta name="theme-color" content="#ffffff" />
+
+    <meta name="google-site-verification" content="w8zoMBao-03aGjF3tu49H6_6xJZD_mEMyQjRke4ll3g" />
+
+    <!-- Google Analytics 4 (gtag.js). Loaded async so it never blocks first
+         paint, and last in <head> so nothing above it waits on the network. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EW958DHTGX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-EW958DHTGX');
+    </script>
 
     <!-- Primary SEO Meta Tags -->
     <title>Scam Website Checker – Free Online Tool to Check If a Website Is Legit or a Scam</title>
@@ -15,7 +32,7 @@
     <meta name="keywords" content="scam website checker, scam website checker free, is this a scam website checker, is it a scam website checker, best scam website checker, free scam website checker, scam website checker uk, real or scam website checker, scam website checker online, legit or scam website checker, online scam website checker, is this scam website checker, scam website checker reddit, google scam website checker, scam website checker tool, fake website checker free, website trust check, scam checker, best fake website checker free, best scam website checker, website safety checker, website checker ScamAdviser, scam website report, how to check if a website is a scam, how to check if a website is legit, scam link checker india, free scam checker, verify scam site, what banks never ask, how to spot a fake online store, how to report a scam website, signs of a phishing website, how to verify a company is real, scam vs fraudulent website, can i get a virus from a website, what to do if entered info on scam site" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="author" content="Scam Website Checker" />
-    <link rel="canonical" href="https://scamwebsitechecker.com/" />
+    <link rel="canonical" href="__SITE_URL__/" />
 
     <!-- Additional SEO Meta Tags -->
     <meta name="geo.region" content="IN" />
@@ -27,9 +44,9 @@
     <meta name="distribution" content="global" />
     <meta name="rating" content="general" />
     <meta name="classification" content="Security, Online Safety, Scam Detection" />
-    <link rel="alternate" hreflang="en" href="https://scamwebsitechecker.com/" />
-    <link rel="alternate" hreflang="en-in" href="https://scamwebsitechecker.com/" />
-    <link rel="alternate" hreflang="x-default" href="https://scamwebsitechecker.com/" />
+    <link rel="alternate" hreflang="en" href="__SITE_URL__/" />
+    <link rel="alternate" hreflang="en-in" href="__SITE_URL__/" />
+    <link rel="alternate" hreflang="x-default" href="__SITE_URL__/" />
 
     <!-- Mobile & App Meta -->
     <meta name="mobile-web-app-capable" content="yes" />
@@ -40,9 +57,9 @@
     <meta property="og:site_name" content="Scam Website Checker" />
     <meta property="og:title" content="Scam Website Checker – Free Online Tool to Check If a Website Is Legit or a Scam" />
     <meta property="og:description" content="Instantly check if a website is real or a scam. Our free scam website checker tool scans domain age, SSL certificate, DNS records, reputation databases, Reddit discussions, and threat intelligence — no account needed." />
-    <meta property="og:url" content="https://scamwebsitechecker.com/" />
-    <meta property="og:image" content="https://scamwebsitechecker.com/og-image.png" />
-    <meta property="og:image:secure_url" content="https://scamwebsitechecker.com/og-image.png" />
+    <meta property="og:url" content="__SITE_URL__/" />
+    <meta property="og:image" content="__SITE_URL__/og-image.png" />
+    <meta property="og:image:secure_url" content="__SITE_URL__/og-image.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -54,7 +71,7 @@
     <meta name="twitter:site" content="@scamchecker" />
     <meta name="twitter:title" content="Scam Website Checker – Is This Website Legit or a Scam?" />
     <meta name="twitter:description" content="Free scam website checker online. Check any website for scam signals: domain age, SSL, DNS, reputation, Reddit & threat databases. No sign-up required." />
-    <meta name="twitter:image" content="https://scamwebsitechecker.com/og-image.png" />
+    <meta name="twitter:image" content="__SITE_URL__/og-image.png" />
     <meta name="twitter:image:alt" content="Scam Website Checker tool interface" />
     <meta name="twitter:image:width" content="1200" />
     <meta name="twitter:image:height" content="630" />
@@ -70,7 +87,7 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "Scam Website Checker",
-      "url": "https://scamwebsitechecker.com/",
+      "url": "__SITE_URL__/",
       "description": "A free online scam website checker tool that reviews domain age, SSL certificate, DNS security, reputation databases, community reports, and threat intelligence signals to help you decide if a website is legit or a scam.",
       "applicationCategory": "SecurityApplication",
       "operatingSystem": "Web",
@@ -93,7 +110,7 @@
       "publisher": {
         "@type": "Organization",
         "name": "Scam Website Checker",
-        "url": "https://scamwebsitechecker.com/"
+        "url": "__SITE_URL__/"
       }
     }
     </script>
@@ -310,7 +327,7 @@
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": "https://scamwebsitechecker.com/"
+          "item": "__SITE_URL__/"
         }
       ]
     }

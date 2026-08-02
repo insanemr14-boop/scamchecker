@@ -43,9 +43,15 @@ wrong):
 |------------------------|------------------------------------|
 | Production branch      | `main`                             |
 | Framework preset       | None                               |
-| Build command          | `npm run build --workspace=client` |
+| Build command          | `npm run build`                    |
 | Build output directory | `client/dist`                      |
 | Root directory         | blank (`/`)                        |
+
+The root `build` script builds **only** the client. It must stay that way:
+`server/` has no build step, so chaining `npm run build --workspace=server`
+onto it makes every Cloudflare build fail with `Missing script: "build"` —
+after the client has already built successfully, which makes the log read as
+though the client was at fault.
 
 Pages environment variables:
 
