@@ -62,6 +62,40 @@ The Worker deploys separately via Workers Builds, also connected to this repo.
 Its secrets (`SERPER_API_KEY`, `REDDIT_CLIENT_ID`, ...) are set once with
 `wrangler secret put NAME` and persist across deploys. Never commit them.
 
+## Search engine discovery
+
+`robots.txt` and `sitemap.xml` are generated at build time from
+`client/src/routes.js` — never hand-edit them in `dist/`.
+
+**Google.** Sitemap submission is manual, in Search Console. Google retired its
+`/ping?sitemap=` endpoint in 2023 (it returns 404), so there is no way to
+notify it programmatically without Search Console API credentials, which this
+project does not have. Verification is via the `google-site-verification` meta
+tag in `client/index.html`.
+
+**Bing and Copilot.** Wired up via IndexNow. The key is
+`d91791147ffb5669548fb7fe3be6ec3c`, proven by the file of the same name in
+`client/public/` — the file must keep matching the key or submissions 403.
+Re-notify after a content change with:
+
+```bash
+curl -X POST https://api.indexnow.org/indexnow \
+  -H "Content-Type: application/json; charset=utf-8" \
+  -d '{"host":"riocloud.dpdns.org",
+       "key":"d91791147ffb5669548fb7fe3be6ec3c",
+       "keyLocation":"https://riocloud.dpdns.org/d91791147ffb5669548fb7fe3be6ec3c.txt",
+       "urlList":["https://riocloud.dpdns.org/"]}'
+```
+
+A 202 means accepted. This matters beyond Bing's own traffic: the Bing index is
+what feeds Microsoft Copilot's citations.
+
+**Known weakness.** Every `<lastmod>` is the build date, because the whole site
+rebuilds on every push. Google treats an always-changing `lastmod` as noise and
+starts ignoring it. Deriving each date from the last commit that touched the
+relevant content would be more honest, but Cloudflare's shallow clone makes
+per-file git history unreliable at build time.
+
 ## Building on this server
 
 The shared host cannot give Tailwind 4's native Rust module a thread pool, so a
