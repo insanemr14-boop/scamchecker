@@ -1,0 +1,240 @@
+.card-container {
+  perspective: 1000px;
+  display: inline-block;
+  margin: 2rem auto;
+  width: 320px;
+  height: 200px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.card-face.front {
+  transform: rotateY(0deg);
+  background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+  color: white;
+}
+
+.card-face.back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #2c3e50, #4ca1af);
+  color: white;
+}
+
+.card-content {
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chip {
+  margin-bottom: 20px;
+}
+
+.card-number {
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  font-weight: 300;
+  margin-bottom: 20px;
+}
+
+.card-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.card-holder {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+.card-expiry {
+  text-align: right;
+  opacity: 0.8;
+}
+
+.magnetic-strip {
+  background: linear-gradient(to right, #000, #434343, #000);
+  height: 45px;
+  margin-top: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.magnetic-strip::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.1) 2px,
+    rgba(255, 255, 255, 0.1) 4px
+  );
+  animation: move 2s linear infinite;
+}
+
+@keyframes move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.card-back-content {
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cvc {
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+.cvc-code {
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+  font-family: monospace;
+}
+
+.card-network {
+  margin-top: auto;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+/* Glassmorphism effects */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Subtle shadow variations */
+.shadow-sm {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.1);
+}
+
+/* For scroll reveal animations (will be triggered by JS or CSS animations) */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease-out;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card-container {
+    width: 280px;
+    height: 175px;
+    margin: 1.5rem auto;
+  }
+  
+  .card-content {
+    padding: 15px;
+  }
+  
+  .card-number {
+    font-size: 1rem;
+    letter-spacing: 1.5px;
+  }
+  
+  .chip {
+    margin-bottom: 15px;
+  }
+  
+  .chip svg {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .magnetic-strip {
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-container {
+    width: 260px;
+    height: 160px;
+    margin: 1rem auto;
+  }
+  
+  .card-content {
+    padding: 12px;
+  }
+  
+  .card-number {
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+  }
+  
+  .chip {
+    margin-bottom: 12px;
+  }
+  
+  .chip svg {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .magnetic-strip {
+    height: 35px;
+  }
+}

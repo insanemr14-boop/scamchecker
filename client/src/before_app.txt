@@ -1,0 +1,99 @@
+import { useEffect, useRef, useState } from 'react'
+import {
+  AlertCircle, AlertTriangle, Calendar, CheckCircle2, ChevronDown, ChevronUp,
+  CreditCard, Database, ExternalLink, Globe2, Grid2x2, Info, Loader2, LockKeyhole,
+  MessageSquare, Moon, Search, ShieldCheck, ShieldAlert, Sun, XCircle
+} from 'lucide-react'
+import CreditCard3D from './components/CreditCard3D';
+import './components/CreditCard3D.css';
+import './App.css'
+
+const CHECK_TYPES = [
+  { id: 'domain', name: 'Domain history', description: 'Registration age, registrar & expiry', icon: Calendar },
+  { id: 'ssl', name: 'SSL certificate', description: 'Encryption, issuer & validity', icon: LockKeyhole },
+  { id: 'reddit', name: 'Community reports', description: 'Relevant Reddit discussions', icon: MessageSquare },
+  { id: 'google', name: 'Web reputation', description: 'Search results & reported concerns', icon: Search },
+  { id: 'reputation', name: 'Threat intelligence', description: 'Malware & phishing databases', icon: Database },
+  { id: 'dns', name: 'DNS security', description: 'DNS, SPF & DMARC configuration', icon: Globe2 },
+]
+
+const EXAMPLES = ['amazon.com', 'github.com', 'google.com']
+
+function getScore(checks) {
+  return Math.max(5, checks.reduce((score, check) => score - ({ dangerous: 35, warning: 15, error: 5, unknown: 5 }[check.status] ?? 0), 100))
+}
+
+function scorePresentation(score) {
+  if (score < 50) return { label: 'High Risk', message: 'Multiple signals need your attention.', className: 'border-danger/35 bg-danger/10 text-danger', icon: ShieldAlert }
+  if (score < 80) return { label: 'Use Caution', message: 'Review the findings before you continue.', className: 'border-warning/35 bg-warning/10 text-warning', icon: AlertTriangle }
+  return { label: 'Low Risk', message: 'No high-risk signal was found in this scan.', className: 'border-success/35 bg-success/10 text-success', icon: ShieldCheck }
+}
+
+function StatusIcon({ status, className = 'size-5' }) {
+
+function StatusIcon({ status, className = "size-5" }) {
+  if (status === "safe") return <CheckCircle2 className={`${className} text-success`} aria-hidden="true" />
+  if (status === "warning") return <AlertTriangle className={`${className} text-warning`} aria-hidden="true" />
+  if (status === "dangerous") return <XCircle className={`${className} text-danger`} aria-hidden="true" />
+  return <Info className={`${className} text-muted`} aria-hidden="true" />
+}
+
+function getScore(checks) {
+  return Math.max(5, checks.reduce((score, check) => score - ({ dangerous: 35, warning: 15, error: 5, unknown: 5 }[check.status] ?? 0), 100))
+}
+
+function scorePresentation(score) {
+  if (score < 50) return { label: "High Risk", message: "Multiple signals need your attention.", className: "border-danger/35 bg-danger/10 text-danger", icon: ShieldAlert }
+  if (score < 80) return { label: "Use Caution", message: "Review the findings before you continue.", className: "border-warning/35 bg-warning/10 text-warning", icon: AlertTriangle }
+  return { label: "Low Risk", message: "No high-risk signal was found in this scan.", className: "border-success/35 bg-success/10 text-success", icon: ShieldCheck }
+}
+
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h3 className="text-sm font-semibold tracking-tight text-ink">{check.name}</h3>
+              <p className="mt-1 text-sm leading-5 text-muted">{check.description}</p>
+            </div>
+            <StatusIcon status={check.status} />
+          </div>
+          {check.error && <p className="mt-3 rounded-md border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">{check.error}</p>}
+          {readableDetails && (
+            <div className="mt-4 border-t border-hairline pt-3">
+              <button type="button" onClick={onToggle} aria-expanded={expanded} className="flex w-full items-center justify-between rounded-md text-left text-sm font-medium text-muted outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
+                Scan details
+                {expanded ? <ChevronUp className="size-4" aria-hidden="true" /> : <ChevronDown className="size-4" aria-hidden="true" />}
+              </button>
+              {expanded && <pre className="mt-3 max-h-72 overflow-auto rounded-lg border border-hairline bg-canvas-subtle p-3 font-mono text-xs leading-5 whitespace-pre-wrap break-words text-muted">{readableDetails}</pre>}
+            </div>
+          )}
+          {check.links?.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{check.links.map((link) => <a key={link.url} href={link.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-md border border-hairline px-2.5 py-1.5 text-xs font-medium text-ink transition-colors hover:border-brand/35 hover:bg-brand/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"><ExternalLink className="size-3" aria-hidden="true" />{link.label}</a>)}</div>}
+        </div>
+      </div>
+    </article>
+  )
+}
+
+function SiteHeader({ theme, setTheme }) {
+  return <header className="border-b border-hairline bg-canvas/90 backdrop-blur"><div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8"><a href="/" className="flex items-center gap-2 text-sm font-semibold tracking-tight text-ink" translate="no"><span className="grid size-7 place-items-center rounded-full bg-ink text-on-primary"><ShieldCheck className="size-4" aria-hidden="true" /></span>Scam Website Checker</a><button type="button" aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="grid size-9 place-items-center rounded-md border border-hairline bg-surface text-muted transition-colors hover:bg-surface-raised hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">{theme === 'dark' ? <Sun className="size-4" aria-hidden="true" /> : <Moon className="size-4" aria-hidden="true" />}</button></div></header>
+}
+
+function SiteFooter() {
+  return <footer className="border-t border-hairline px-4 py-5 text-sm text-muted"><div className="mx-auto flex max-w-6xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><span>Built to help you pause, verify, and browse more safely.</span><nav aria-label="Footer" className="flex flex-wrap gap-x-5 gap-y-2"><a className="hover:text-ink" href="/about">About us</a><a className="hover:text-ink" href="/privacy">Privacy</a><a className="hover:text-ink" href="/terms">Terms</a><a className="hover:text-ink" href="/contact">Contact</a></nav></div></footer>
+}
+
+function InfoPage({ kind, theme, setTheme }) {
+  const content = {
+    about: { eyebrow: 'About us', title: 'Make the safer choice before you click.', intro: 'Scam Website Checker is a practical, privacy-minded tool for checking the signals behind an unfamiliar website.', sections: [['Our mission', 'The web should be easier to navigate with confidence. We bring domain history, encryption, reputation, community discussion, threat intelligence, and DNS signals together in one readable report.'], ['How it works', 'Enter a domain or full URL and we run a set of independent checks. Results are indicators—not a guarantee—so you can slow down and make an informed decision.'], ['Our approach', 'We favor transparent evidence over a black-box verdict. Every result can be expanded to inspect the underlying details and source links.']] },
+    privacy: { eyebrow: 'Privacy policy', title: 'A clear view of how your data is handled.', intro: 'Last updated: July 28, 2026. This policy describes the information handled by Scam Website Checker.', sections: [['Information you provide', 'When you submit a website, the address is sent to our checker service so it can perform the requested analysis. We do not ask for accounts, passwords, payment details, or personal profiles.'], ['How we use information', 'Submitted addresses are used to run checks, return results, and temporarily cache repeated scans. Server logs may contain technical request information needed for reliability and security.'], ['Third-party services', 'Some checks query external services such as DNS providers, reputation databases, search providers, or community sites. Their own privacy policies apply to requests they receive.'], ['Retention and choices', 'Do not submit private, authenticated, or confidential URLs. Contact us if you have a question about a request or want to discuss deletion of server logs.']] },
+    terms: { eyebrow: 'Terms & conditions', title: 'Use the checker as a signal, not a guarantee.', intro: 'Last updated: July 28, 2026. By using this service, you agree to these terms.', sections: [['Informational service', 'Reports are automated and provided for general information and education. A “safe” or “low risk” result does not guarantee that a site is secure, legitimate, or free from fraud.'], ['Your responsibility', 'You are responsible for decisions made after reviewing a report. Verify payment requests, identity claims, downloads, and login pages through independent channels.'], ['Acceptable use', 'Do not use the service to probe systems you do not have permission to assess, submit confidential URLs, abuse external providers, or interfere with the service.'], ['Availability and changes', 'Checks depend on third-party data and may be incomplete or unavailable. We may improve, change, or discontinue features without notice.']] },
+    'how-it-works': { eyebrow: 'How it works', title: 'Check any website in 3 simple steps.', intro: 'Scam Website Checker is a free online tool that analyses six independent signals to help you decide if a website is safe, suspicious, or dangerous — no account required.', sections: [['Step 1 — Paste a website address', 'Type or paste any domain (e.g. example.com) or a full URL into the search box on the home page. The tool accepts both plain domains and complete web addresses starting with http:// or https://.'], ['Step 2 — We run 6 safety checks', 'Within seconds the tool queries six independent sources: Domain age and WHOIS registration history, SSL certificate validity and issuer, DNS security records including SPF and DMARC, threat intelligence databases (PhishTank, URLVoid, VirusTotal), Reddit community scam reports, and Google web reputation signals. Each check runs in parallel so results arrive fast.'], ['Step 3 — Read your safety report', 'You receive a Trust Score out of 100 and a colour-coded verdict: Low Risk, Use Caution, or High Risk. Every check card can be expanded to show raw scan data and links to external sources like WHOIS lookups, SSL Labs, and VirusTotal.'], ['Understanding the results', 'A Low Risk verdict means none of the checks found a concern. Use Caution means one or more signals are ambiguous. High Risk means multiple red flags were detected. The score is a guide — always verify sensitive requests independently before sharing money or personal information.'], ['Frequently asked questions', 'Is the tool free? Yes, completely free with no sign-up. How often is data updated? Each scan fetches live data. Can I check any website? Yes — any domain or URL worldwide, including UK sites (.co.uk). Is a low-risk score a guarantee? No. It is an automated screening tool, not a legal verdict.']] },
+    contact: { eyebrow: 'Contact us', title: 'Questions, feedback, or a false positive?', intro: 'Tell us what happened and include enough context for us to understand the issue. Please do not send passwords, payment details, or private URLs.', sections: [['Email', 'For support and feedback, email hello@scamwebsitechecker.com. We aim to review messages within a few business days.'], ['What to include', 'Share the domain, approximate time of the scan, what you expected to see, and any relevant error message. Redact personal or confidential information before sending.']] },
+  }[kind]
+
+  return <div className="min-h-screen bg-canvas text-ink"><SiteHeader theme={theme} setTheme={setTheme} /><main className="mx-auto max-w-3xl px-5 py-16 sm:px-8 sm:py-24"><p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-brand">{content.eyebrow}</p><h1 className="mt-5 text-balance text-4xl font-semibold tracking-[-0.055em] sm:text-6xl">{content.title}</h1><p className="mt-6 max-w-2xl text-pretty text-lg leading-8 text-muted">{content.intro}</p><div className="mt-12 divide-y divide-hairline border-y border-hairline">{content.sections.map(([heading, body]) => <section key={heading} className="py-7"><h2 className="text-lg font-semibold tracking-tight">{heading}</h2><p className="mt-3 leading-7 text-muted">{body}</p></section>)}</div>{kind === 'contact' && <a href="mailto:hello@scamwebsitechecker.com" className="mt-8 inline-flex rounded-lg bg-ink px-5 py-3 text-sm font-medium text-on-primary hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">Email us</a>}        {/* 3D Credit Card Effect */
+        <div className="mb-12">
+          <h2 className="text-center text-2xl font-bold mb-8">Experience Our 3D Credit Card Effect</h2>
+          <CreditCard3D />
+        </div>
+      </main><SiteFooter /></div>
+}
+

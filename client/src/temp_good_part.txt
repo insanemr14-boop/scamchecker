@@ -1,0 +1,31 @@
+import { useEffect, useRef, useState } from 'react'
+import {
+  AlertCircle, AlertTriangle, Calendar, CheckCircle2, ChevronDown, ChevronUp,
+  CreditCard, Database, ExternalLink, Globe2, Grid2x2, Info, Loader2, LockKeyhole,
+  MessageSquare, Moon, Search, ShieldCheck, ShieldAlert, Sun, XCircle
+} from 'lucide-react'
+import CreditCard3D from './components/CreditCard3D';
+import './components/CreditCard3D.css';
+import './App.css'
+
+const CHECK_TYPES = [
+  { id: 'domain', name: 'Domain history', description: 'Registration age, registrar & expiry', icon: Calendar },
+  { id: 'ssl', name: 'SSL certificate', description: 'Encryption, issuer & validity', icon: LockKeyhole },
+  { id: 'reddit', name: 'Community reports', description: 'Relevant Reddit discussions', icon: MessageSquare },
+  { id: 'google', name: 'Web reputation', description: 'Search results & reported concerns', icon: Search },
+  { id: 'reputation', name: 'Threat intelligence', description: 'Malware & phishing databases', icon: Database },
+  { id: 'dns', name: 'DNS security', description: 'DNS, SPF & DMARC configuration', icon: Globe2 },
+]
+
+const EXAMPLES = ['amazon.com', 'github.com', 'google.com']
+
+function getScore(checks) {
+
+function StatusIcon({ status, className = 'size-5' }) {
+  if (status === 'safe') return <CheckCircle2 className={} aria-hidden="true" />
+  if (status === 'warning') return <AlertTriangle className={} aria-hidden="true" />
+  if (status === 'dangerous') return <XCircle className={} aria-hidden="true" />
+  return <Info className={} aria-hidden="true" />
+}
+
+function ResultCard({ check, expanded, onToggle }) {

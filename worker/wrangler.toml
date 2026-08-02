@@ -1,0 +1,11 @@
+name = "scam-checker-api"
+main = "index.js"
+compatibility_date = "2026-07-28"
+
+# Cron Trigger: refresh OpenPhish feed every 20 minutes
+[triggers]
+crons = ["*/20 * * * *"]
+
+[vars]
+# Public env vars (no secrets) — keep API keys out of source.
+# Set secrets via: wrangler secret put SERPER_API_KEY

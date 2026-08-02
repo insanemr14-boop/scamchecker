@@ -1,0 +1,18 @@
+function getScore(checks) {
+  return Math.max(5, checks.reduce((score, check) => score - ({ dangerous: 35, warning: 15, error: 5, unknown: 5 }[check.status] ?? 0), 100))
+}
+
+function scorePresentation(score) {
+  if (score < 50) return { label: 'High Risk', message: 'Multiple signals need your attention.', className: 'border-danger/35 bg-danger/10 text-danger', icon: ShieldAlert }
+  if (score < 80) return { label: 'Use Caution', message: 'Review the findings before you continue.', className: 'border-warning/35 bg-warning/10 text-warning', icon: AlertTriangle }
+  return { label: 'Low Risk', message: 'No high-risk signal was found in this scan.', className: 'border-success/35 bg-success/10 text-success', icon: ShieldCheck }
+}
+
+function StatusIcon({ status, className = 'size-5' }) {
+  if (status === 'safe') return <CheckCircle2 className={`${className} text-success`} aria-hidden="true" />
+  if (status === 'warning') return <AlertTriangle className={`${className} text-warning`} aria-hidden="true" />
+  if (status === 'dangerous') return <XCircle className={`${className} text-danger`} aria-hidden="true" />
+  return <Info className={`${className} text-muted`} aria-hidden="true" />
+}
+
+function ResultCard({ check, expanded, onToggle }) {

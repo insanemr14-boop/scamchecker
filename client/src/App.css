@@ -1,0 +1,98 @@
+.mesh {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 10% 0%, color-mix(in srgb, var(--color-brand) 12%, transparent), transparent),
+    radial-gradient(ellipse 60% 40% at 90% 10%, color-mix(in srgb, #7928ca 10%, transparent), transparent),
+    radial-gradient(ellipse 50% 60% at 50% 100%, color-mix(in srgb, var(--color-brand) 5%, transparent), transparent);
+}
+
+.grid-fade {
+  background-image:
+    linear-gradient(var(--color-hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-hairline) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 80%);
+}
+
+/* ── Word break ── */
+h1, h2, h3 { overflow-wrap: break-word; word-break: break-word; }
+
+/* ── SEO section scroll reveal ── */
+.translate-y-8 { transform: translateY(2rem); }
+.translate-y-0 { transform: translateY(0); }
+.opacity-0 { opacity: 0; }
+.opacity-100 { opacity: 1; }
+
+/* ── Prevent iOS input zoom ── */
+input[name="website"] { font-size: 1rem; min-height: 2.75rem; }
+
+/* ── Smooth scroll ── */
+html { scroll-behavior: smooth; }
+
+/* ── Result card hover ── */
+article {
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+article:hover {
+  transform: translateY(-1px);
+}
+
+/* ── Desktop enhancements ── */
+@media (min-width: 1024px) {
+  .mesh { min-height: 480px; }
+}
+
+/* ── Mobile (< 640px) ── */
+@media (max-width: 639px) {
+  button { min-height: 2.75rem; }
+
+  .prose p  { font-size: 0.9rem; line-height: 1.7; }
+  .prose h2 { font-size: 1.25rem; margin-top: 1.5rem; }
+  .prose h3 { font-size: 1rem; margin-top: 1rem; }
+
+  article { padding: 0.875rem !important; transform: none !important; }
+
+  footer { padding: 1rem; }
+  footer nav { gap: 0.5rem 1rem; }
+}
+
+/* Calibration modal specific styles */
+.calibration-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.calibration-modal {
+  position: relative;
+  width: 100%;
+  max-width: 24rem;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.calibration-content {
+  position: relative;
+  background-color: var(--color-canvas);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-hairline);
+  color: var(--color-ink);
+}
+
+.dark .calibration-content {
+  background-color: var(--color-canvas);
+  border-color: var(--color-hairline);
+  color: var(--color-ink);
+}
+
+.dark .calibration-content {
+  background-color: #0a0a0a;
+  border-color: #2a2a2a;
+  color: #ededed;
+}
