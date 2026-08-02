@@ -1,10 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import { copyFileSync, existsSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { INFO_ROUTES, ERROR_ROUTES, SITEMAP_ROUTES } from './src/routes.js'
+import { INFO_ROUTES, ERROR_ROUTES, SITEMAP_ROUTES, ROUTE_META } from './src/routes.js'
 
 /**
  * Canonical origin for this build, without a trailing slash.
@@ -90,43 +90,66 @@ ${urls}
         ].join('\n'),
       })
 
-      // ── _redirects ──
-      // Client-side routes need an explicit rewrite, or Cloudflare Pages looks
-      // for /about/index.html, fails to find it, and serves a 404.
-      //
-      // This is an explicit list, not a catch-all `/* /index.html 200`. A
-      // catch-all makes every wrong URL answer 200 — a soft 404. Unknown paths
-      // instead fall through to 404.html and get a real 404 status.
-      this.emitFile({
-        type: 'asset',
-        fileName: '_redirects',
-        source: [
-          '# Client-side routes → the SPA shell, served 200 so they index normally.',
-          ...INFO_ROUTES.flatMap((r) => [
-            `/${r}    /index.html   200`,
-            `/${r}/   /index.html   200`,
-          ]),
-          '',
-          '# Everything else falls through to 404.html with a genuine 404 status.',
-          '',
-        ].join('\n'),
-      })
+      // Deliberately no _redirects file. Rewriting /about to /index.html looks
+      // right but does not work here: Cloudflare's html_handling normalises the
+      // /index.html target back to /, so the rewrite is served as a 308 to the
+      // homepage and the page becomes unreachable. Real files per route (see
+      // writeBundle) avoid the rewrite layer altogether.
     },
 
     /**
-     * Cloudflare Pages serves 404.html for unmatched paths with a real 404
-     * status. Copying the built shell means React boots, sees a path it does
-     * not recognise, and renders the 404 page.
+     * Writes a real HTML file for every route: dist/about/index.html and so on,
+     * plus dist/404.html.
+     *
+     * Each is the built SPA shell with its own <title>, description and
+     * canonical substituted in, so those tags are present in the initial HTML
+     * rather than injected by React after hydration — which is both better for
+     * crawlers and what stops the five pages reading as duplicates of the
+     * homepage.
+     *
+     * Serving real files also means Cloudflare answers /about with a plain 200
+     * and still falls back to 404.html, with a genuine 404 status, for anything
+     * it does not have a file for.
      *
      * Runs in writeBundle, not closeBundle: closeBundle also fires when the
-     * build has failed, at which point dist/index.html does not exist and the
-     * copy throws, masking the real error with an ENOENT.
+     * build has failed, at which point dist/index.html does not exist and this
+     * would throw an ENOENT that masks the real error.
      */
     writeBundle(options) {
       const dist = options.dir ?? resolve(dirname(fileURLToPath(import.meta.url)), 'dist')
       const shell = resolve(dist, 'index.html')
       if (!existsSync(shell)) return
-      copyFileSync(shell, resolve(dist, '404.html'))
+
+      const html = readFileSync(shell, 'utf8')
+      const attr = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
+
+      const render = (route) => {
+        const meta = ROUTE_META[route]
+        return html
+          .replace(/<title>[\s\S]*?<\/title>/, `<title>${attr(meta.title)}</title>`)
+          .replace(
+            /<meta name="description" content="[^"]*"\s*\/?>/,
+            `<meta name="description" content="${attr(meta.description)}" />`,
+          )
+          .replace(
+            /<link rel="canonical" href="[^"]*"\s*\/?>/,
+            `<link rel="canonical" href="${SITE_URL}/${route}" />`,
+          )
+      }
+
+      for (const route of INFO_ROUTES) {
+        mkdirSync(resolve(dist, route), { recursive: true })
+        writeFileSync(resolve(dist, route, 'index.html'), render(route))
+      }
+
+      // The 404 shell must never be indexable, whatever else happens.
+      writeFileSync(
+        resolve(dist, '404.html'),
+        render('404').replace(
+          /<meta name="robots" content="[^"]*"\s*\/?>/,
+          '<meta name="robots" content="noindex, follow" />',
+        ),
+      )
     },
   }
 }
