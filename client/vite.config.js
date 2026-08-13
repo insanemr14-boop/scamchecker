@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { INFO_ROUTES, ERROR_ROUTES, SITEMAP_ROUTES, ROUTE_META } from './src/routes.js'
+import { INFO_ROUTES, ERROR_ROUTES, UTILITY_ROUTES, SITEMAP_ROUTES, ROUTE_META } from './src/routes.js'
 
 /**
  * Canonical origin for this build, without a trailing slash.
@@ -83,6 +83,7 @@ ${urls}
           '',
           '# Synthetic error pages — never useful in search results.',
           ...ERROR_ROUTES.map((r) => `Disallow: /${r}`),
+          ...UTILITY_ROUTES.map((r) => `Disallow: /${r}/`),
           '',
           '# The API lives on a separate Worker origin, but block the path anyway',
           '# in case it is ever proxied onto this domain.',
@@ -143,6 +144,17 @@ ${urls}
       for (const route of INFO_ROUTES) {
         mkdirSync(resolve(dist, route), { recursive: true })
         writeFileSync(resolve(dist, route, 'index.html'), render(route))
+      }
+
+      for (const route of UTILITY_ROUTES) {
+        mkdirSync(resolve(dist, route), { recursive: true })
+        writeFileSync(
+          resolve(dist, route, 'index.html'),
+          render(route).replace(
+            /<meta name="robots" content="[^"]*"\s*\/?>/,
+            '<meta name="robots" content="noindex, follow" />',
+          ),
+        )
       }
 
       // The 404 shell must never be indexable, whatever else happens.

@@ -375,14 +375,59 @@ function SiteFooter() {
   )
 }
 
+/**
+ * Contact form. Posts natively (no fetch, no JS) to the shared RioCloud lead
+ * worker, which relays to info@riocloudsolutions.com over SMTP. A native form
+ * POST is not subject to CORS, so this works from any static origin.
+ *
+ * `website` is a honeypot — bots fill it and the worker discards the message.
+ */
+function LeadForm() {
+  const field =
+    'mt-1 w-full rounded-lg border border-hairline bg-surface px-3 py-2 text-ink ' +
+    'outline-none focus:border-brand focus-visible:ring-2 focus-visible:ring-brand'
+  return (
+    <form method="POST" action="https://dentistseo.dpdns.org/api/lead" className="mt-10">
+      <input type="hidden" name="site" value={SITE_URL} />
+      <input type="hidden" name="redirect" value={`${SITE_URL}/thank-you/`} />
+      <div aria-hidden="true" className="absolute left-[-9999px]">
+        <label>Leave this field empty<input type="text" name="website" tabIndex={-1} autoComplete="off" /></label>
+      </div>
+      <h2 className="text-lg font-semibold tracking-tight">Send us a message</h2>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <div>
+          <label className="block text-sm font-medium" htmlFor="lf-name">Your name</label>
+          <input className={field} id="lf-name" name="name" type="text" required autoComplete="name" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium" htmlFor="lf-email">Email</label>
+          <input className={field} id="lf-email" name="email" type="email" required autoComplete="email" />
+        </div>
+      </div>
+      <div className="mt-4">
+        <label className="block text-sm font-medium" htmlFor="lf-message">How can we help?</label>
+        <textarea className={field} id="lf-message" name="message" rows={5} required />
+      </div>
+      <button type="submit" className="mt-5 inline-flex rounded-lg bg-ink px-5 py-3 text-sm font-medium text-on-primary hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+        Send message
+      </button>
+      <p className="mt-3 text-sm text-muted">
+        Your details go only to our team — never sold, never added to a marketing list.
+        See the <a className="underline" href="/privacy/">privacy policy</a>.
+      </p>
+    </form>
+  )
+}
+
 function InfoPage({ kind, theme, setTheme }) {
   const content = {
     about: { eyebrow: 'About us', title: 'Make the safer choice before you click.', intro: 'Scam Website Checker is a practical, privacy-minded tool for checking the signals behind an unfamiliar website.', sections: [['Our mission', 'The web should be easier to navigate with confidence. We bring domain history, encryption, reputation, community discussion, threat intelligence, and DNS signals together in one readable report.'], ['How it works', 'Enter a domain or full URL and we run a set of independent checks. Results are indicators—not a guarantee—so you can slow down and make an informed decision.'], ['Our approach', 'We favor transparent evidence over a black-box verdict. Every result can be expanded to inspect the underlying details and source links.']] },
     privacy: { eyebrow: 'Privacy policy', title: 'A clear view of how your data is handled.', intro: 'Last updated: July 28, 2026. This policy describes the information handled by Scam Website Checker.', sections: [['Information you provide', 'When you submit a website, the address is sent to our checker service so it can perform the requested analysis. We do not ask for accounts, passwords, payment details, or personal profiles.'], ['How we use information', 'Submitted addresses are used to run checks, return results, and temporarily cache repeated scans. Server logs may contain technical request information needed for reliability and security.'], ['Third-party services', 'Some checks query external services such as DNS providers, reputation databases, search providers, or community sites. Their own privacy policies apply to requests they receive.'], ['Retention and choices', 'Do not submit private, authenticated, or confidential URLs. Contact us if you have a question about a request or want to discuss deletion of server logs.']] },
     terms: { eyebrow: 'Terms & conditions', title: 'Use the checker as a signal, not a guarantee.', intro: 'Last updated: July 28, 2026. By using this service, you agree to these terms.', sections: [['Informational service', 'Reports are automated and provided for general information and education. A "safe" or "low risk" result does not guarantee that a site is secure, legitimate, or free from fraud.'], ['Your responsibility', 'You are responsible for decisions made after reviewing a report. Verify payment requests, identity claims, downloads, and login pages through independent channels.'], ['Acceptable use', 'Do not use the service to probe systems you do not have permission to assess, submit confidential URLs, abuse external providers, or interfere with the service.'], ['Availability and changes', 'Checks depend on third-party data and may be incomplete or unavailable. We may improve, change, or discontinue features without notice.']] },
     'how-it-works': { eyebrow: 'How it works', title: 'Check any website in 3 simple steps.', intro: 'Scam Website Checker is a free online tool that analyses six independent signals to help you decide if a website is safe, suspicious, or dangerous — no account required.', sections: [['Step 1 — Paste a website address', 'Type or paste any domain (e.g. example.com) or a full URL into the search box on the home page. The tool accepts both plain domains and complete web addresses starting with http:// or https://.'], ['Step 2 — We run 6 safety checks', 'Within seconds the tool queries six independent sources: Domain age and WHOIS registration history, SSL certificate validity and issuer, DNS security records including SPF and DMARC, threat intelligence databases (PhishTank, URLVoid, VirusTotal), Reddit community scam reports, and Google web reputation signals. Each check runs in parallel so results arrive fast.'], ['Step 3 — Read your safety report', 'You receive a Trust Score out of 100 and a colour-coded verdict: Low Risk, Use Caution, or High Risk. Every check card can be expanded to show raw scan data and links to external sources like WHOIS lookups, SSL Labs, and VirusTotal.'], ['Understanding the results', 'A Low Risk verdict means none of the checks found a concern. Use Caution means one or more signals are ambiguous. High Risk means multiple red flags were detected. The score is a guide — always verify sensitive requests independently before sharing money or personal information.'], ['Frequently asked questions', 'Is the tool free? Yes, completely free with no sign-up. How often is data updated? Each scan fetches live data. Can I check any website? Yes — any domain or URL worldwide, including UK sites (.co.uk). Is a low-risk score a guarantee? No. It is an automated screening tool, not a legal verdict.']] },
-    contact: { eyebrow: 'Contact us', title: 'Questions, feedback, or a false positive?', intro: 'Tell us what happened and include enough context for us to understand the issue. Please do not send passwords, payment details, or private URLs.', sections: [['Email', 'For support and feedback, email hello@scamwebsitechecker.com. We aim to review messages within a few business days.'], ['What to include', 'Share the domain, approximate time of the scan, what you expected to see, and any relevant error message. Redact personal or confidential information before sending.']] },
+    contact: { eyebrow: 'Contact us', title: 'Questions, feedback, or a false positive?', intro: 'Tell us what happened and include enough context for us to understand the issue. Please do not send passwords, payment details, or private URLs.', sections: [['Email', 'For support, feedback or a false positive, email info@riocloudsolutions.com or call +91 75085 83782. We reply within 2\u20134 hours during business hours, Monday to Saturday, 9:00\u201319:00 IST.'], ['What to include', 'Share the domain, approximate time of the scan, what you expected to see, and any relevant error message. Redact personal or confidential information before sending.'], ['Who runs this tool', 'Scam Website Checker is built and operated by RioCloud Solutions, a technology and digital services company based in Chandigarh, India. The same team builds and secures websites and cloud infrastructure for clients.']] },
     '404': { eyebrow: 'Error 404', title: 'Page not found.', intro: 'We could not find the page you were looking for. It may have been moved, renamed, or it never existed in the first place.', sections: [['What you can do', 'Use the home page to check any website for scam signals. The address bar may have a typo — try correcting it.'], ['Need help?', 'If you reached this page from one of our links, we would appreciate a heads-up so we can fix it. Use the contact page to send the broken URL.']] },
+    'thank-you': { eyebrow: 'Thank you', title: 'Message received.', intro: 'Thanks for getting in touch. Your message has landed in our inbox and a real person will read it.', sections: [['What happens next', 'We reply to enquiries within 2\u20134 hours during business hours, Monday to Saturday, 9:00\u201319:00 IST. If it is urgent, email info@riocloudsolutions.com or call +91 75085 83782.'], ['While you are here', 'You can run another website safety check from the home page, or read how the six checks work on the How it works page.']] },
     '500': { eyebrow: 'Error 500', title: 'Something went wrong on our end.', intro: 'The server hit an unexpected error while handling your request. The issue has been logged and we are looking into it.', sections: [['Try again', 'Most temporary errors clear within a minute. Refresh the page or return to the home page and try again.'], ['Still broken?', 'If the error keeps happening, please report it via the contact page and include the time, the page you were on, and what you were trying to do.']] },
   }[kind]
 
@@ -442,11 +487,7 @@ function InfoPage({ kind, theme, setTheme }) {
             </section>
           ))}
         </div>
-        {kind === 'contact' && (
-          <a href="mailto:hello@scamwebsitechecker.com" className="mt-8 inline-flex rounded-lg bg-ink px-5 py-3 text-sm font-medium text-on-primary hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-            Email us
-          </a>
-        )}
+        {kind === 'contact' && <LeadForm />}
         {(kind === '404' || kind === '500') && (
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="/" className="inline-flex rounded-lg bg-ink px-5 py-3 text-sm font-medium text-on-primary hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">

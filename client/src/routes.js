@@ -18,8 +18,15 @@ export const INFO_ROUTES = ['about', 'privacy', 'terms', 'contact', 'how-it-work
  */
 export const ERROR_ROUTES = ['404', '500']
 
+/**
+ * Routable but deliberately unlisted, like the error pages. /thank-you/ is the
+ * post-submission landing page the shared lead worker redirects to; indexing it
+ * would put a dead-end confirmation page in search results.
+ */
+export const UTILITY_ROUTES = ['thank-you']
+
 /** Every path <InfoPage> knows how to render. */
-export const PAGE_ROUTES = [...INFO_ROUTES, ...ERROR_ROUTES]
+export const PAGE_ROUTES = [...INFO_ROUTES, ...ERROR_ROUTES, ...UTILITY_ROUTES]
 
 /**
  * What belongs in sitemap.xml: the homepage plus the real pages.
@@ -72,5 +79,9 @@ export const ROUTE_META = {
   500: {
     title: 'Something Went Wrong – Scam Website Checker',
     description: 'The server hit an unexpected error. Please try your scam website check again.',
+  },
+  'thank-you': {
+    title: 'Thank You – Scam Website Checker',
+    description: 'Your message has been received. The RioCloud Solutions team will get back to you shortly.',
   },
 }
