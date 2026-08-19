@@ -194,6 +194,7 @@ ${cssHref ? `<link rel="stylesheet" href="${cssHref}" />` : ''}
     <a href="/" class="text-sm font-semibold tracking-tight text-ink">Scam Website Checker</a>
     <nav class="flex items-center gap-4 text-sm text-muted">
       <a class="hover:text-ink" href="/${GUIDE_INDEX_ROUTE}/">Guides</a>
+      <a class="hover:text-ink" href="/contact/">Contact</a>
       <a class="hover:text-ink" href="/">Check a site</a>
     </nav>
   </div>

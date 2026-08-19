@@ -716,6 +716,8 @@ export default function App() {
           </a>
           <nav className="flex items-center gap-1 sm:gap-3">
             <a href="/how-it-works/" className="hidden rounded-lg px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink sm:inline-flex">How it works</a>
+            <a href="/guides/" className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink">Guides</a>
+            <a href="/contact/" className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink">Contact</a>
             <a href="#main" className="hidden rounded-lg px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink sm:inline-flex">Check a site</a>
             <span className="hidden h-4 w-px bg-hairline sm:block" />
             <span className="hidden rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs font-medium text-success sm:inline-flex">Free Tool</span>
