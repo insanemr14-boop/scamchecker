@@ -193,7 +193,7 @@ ${cssHref ? `<link rel="stylesheet" href="${cssHref}" />` : ''}
   <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
     <a href="/" class="text-sm font-semibold tracking-tight text-ink">Scam Website Checker</a>
     <nav class="flex items-center gap-4 text-sm text-muted">
-      <a class="hover:text-ink" href="/${GUIDE_INDEX_ROUTE}/">Guides</a>
+      <a class="hover:text-ink" href="/${GUIDE_INDEX_ROUTE}/">Blog</a>
       <a class="hover:text-ink" href="/contact/">Contact</a>
       <a class="hover:text-ink" href="/">Check a site</a>
     </nav>
@@ -203,7 +203,7 @@ ${bodyHtml}
 <footer class="border-t border-hairline bg-canvas px-4 py-6 text-sm text-muted">
   <div class="mx-auto max-w-6xl space-y-4">
     <nav aria-label="Footer" class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end sm:gap-x-6 sm:gap-y-2">
-      <a class="py-1 hover:text-ink" href="/${GUIDE_INDEX_ROUTE}/">Guides</a>
+      <a class="py-1 hover:text-ink" href="/${GUIDE_INDEX_ROUTE}/">Blog</a>
       <a class="py-1 hover:text-ink" href="/about/">About us</a>
       <a class="py-1 hover:text-ink" href="/privacy/">Privacy policy</a>
       <a class="py-1 hover:text-ink" href="/terms/">Terms &amp; conditions</a>
@@ -287,7 +287,7 @@ ${bodyHtml}
         const body = `<main class="mx-auto max-w-3xl px-5 py-10 sm:px-8 sm:py-14">
   <nav aria-label="Breadcrumb" class="mb-6 text-sm text-muted">
     <a class="hover:text-ink" href="/">Home</a> <span aria-hidden="true">/</span>
-    <a class="hover:text-ink" href="/${GUIDE_INDEX_ROUTE}/">Guides</a>
+    <a class="hover:text-ink" href="/${GUIDE_INDEX_ROUTE}/">Blog</a>
   </nav>
   <article class="guide-article">
     <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">${attr(g.title)}</h1>
@@ -317,7 +317,7 @@ ${leadForm(g.slug)}
     </li>`,
       ).join('\n')
       const indexBody = `<main class="mx-auto max-w-4xl px-5 py-10 sm:px-8 sm:py-14">
-  <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Guides</h1>
+  <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Blog</h1>
   <p class="mt-3 max-w-2xl text-base leading-7 text-muted">Plain-English guides to checking whether a website is safe, recognising the common scam patterns, choosing payment methods you can reverse, and what to do if something has already gone wrong.</p>
   <ul class="mt-8 grid gap-4 sm:grid-cols-2">
 ${cards}
@@ -329,7 +329,7 @@ ${cards}
         chrome(indexBody).replace(
           '__HEAD__',
           head(
-            'Guides — Scam Website Checker',
+            'Blog — Scam Website Checker',
             'Practical guides to spotting scam websites, fake online stores and phishing messages, choosing safer payment methods, and recovering after a scam.',
             indexCanonical,
           ),

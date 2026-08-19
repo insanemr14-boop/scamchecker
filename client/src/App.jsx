@@ -362,7 +362,7 @@ function SiteFooter() {
     <footer className="border-t border-hairline bg-canvas px-4 py-6 text-sm text-muted">
       <div className="mx-auto max-w-6xl space-y-4">
         <nav aria-label="Footer" className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end sm:gap-x-6 sm:gap-y-2">
-          <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/guides/">Guides</a>
+          <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/guides/">Blog</a>
           <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/about/">About us</a>
           <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/privacy/">Privacy policy</a>
           <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/terms/">Terms &amp; conditions</a>
@@ -716,7 +716,7 @@ export default function App() {
           </a>
           <nav className="flex items-center gap-1 sm:gap-3">
             <a href="/how-it-works/" className="hidden rounded-lg px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink sm:inline-flex">How it works</a>
-            <a href="/guides/" className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink">Guides</a>
+            <a href="/guides/" className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink">Blog</a>
             <a href="/contact/" className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink">Contact</a>
             <a href="#main" className="hidden rounded-lg px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink sm:inline-flex">Check a site</a>
             <span className="hidden h-4 w-px bg-hairline sm:block" />
