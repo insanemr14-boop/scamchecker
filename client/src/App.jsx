@@ -362,6 +362,7 @@ function SiteFooter() {
     <footer className="border-t border-hairline bg-canvas px-4 py-6 text-sm text-muted">
       <div className="mx-auto max-w-6xl space-y-4">
         <nav aria-label="Footer" className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end sm:gap-x-6 sm:gap-y-2">
+          <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/guides/">Guides</a>
           <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/about/">About us</a>
           <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/privacy/">Privacy policy</a>
           <a className="flex items-center gap-1.5 rounded-md py-1 hover:text-ink transition-colors" href="/terms/">Terms &amp; conditions</a>

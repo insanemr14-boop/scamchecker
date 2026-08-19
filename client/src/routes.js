@@ -29,10 +29,23 @@ export const UTILITY_ROUTES = ['thank-you']
 export const PAGE_ROUTES = [...INFO_ROUTES, ...ERROR_ROUTES, ...UTILITY_ROUTES]
 
 /**
+ * The guide library index and its articles.
+ *
+ * These are NOT SPA routes. Each is written to a real static HTML file at build
+ * time with its prose already in the markup, because the SPA shell serves an
+ * empty <div id="root"> and an article nobody can read without executing
+ * JavaScript is not much of an article. App.jsx never sees these paths — the
+ * server answers them with their own files.
+ *
+ * Listed here anyway so the sitemap has one source of truth.
+ */
+export const GUIDE_INDEX_ROUTE = "guides"
+
+/**
  * What belongs in sitemap.xml: the homepage plus the real pages.
  * `''` is the homepage.
  */
-export const SITEMAP_ROUTES = ['', ...INFO_ROUTES]
+export const SITEMAP_ROUTES = ['', ...INFO_ROUTES, GUIDE_INDEX_ROUTE]
 
 /**
  * Per-route <title> and meta description.

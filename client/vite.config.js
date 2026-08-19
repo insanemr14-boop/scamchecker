@@ -4,7 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { INFO_ROUTES, ERROR_ROUTES, UTILITY_ROUTES, SITEMAP_ROUTES, ROUTE_META } from './src/routes.js'
+import { INFO_ROUTES, ERROR_ROUTES, UTILITY_ROUTES, SITEMAP_ROUTES, ROUTE_META, GUIDE_INDEX_ROUTE } from './src/routes.js'
+import { GUIDES, readingTime } from './src/content/guides/index.js'
 
 /**
  * Canonical origin for this build, without a trailing slash.
@@ -41,11 +42,16 @@ function seoFilesPlugin() {
       const today = new Date().toISOString().slice(0, 10)
 
       // ── sitemap.xml ──
-      const urls = SITEMAP_ROUTES.map((route) => {
+      // Guide articles are real files, not SPA routes, so they are appended
+      // rather than living in SITEMAP_ROUTES.
+      const guideUrls = GUIDES.map((g) => `/${GUIDE_INDEX_ROUTE}/${g.slug}`)
+
+      const urls = [...SITEMAP_ROUTES, ...guideUrls].map((route) => {
         // Trailing slash is not cosmetic. Each route is a directory index, and
         // Cloudflare 308s /about to /about/. Listing the unslashed form would
         // point both the sitemap and the canonical at a redirect.
-        const loc = route === '' ? `${SITE_URL}/` : `${SITE_URL}/${route}/`
+        const path = route.startsWith('/') ? route.slice(1) : route
+        const loc = path === '' ? `${SITE_URL}/` : `${SITE_URL}/${path}/`
         // The homepage is the tool itself; the supporting pages are near-static.
         const priority = route === '' ? '1.0' : '0.6'
         const changefreq = route === '' ? 'daily' : 'monthly'
@@ -156,6 +162,144 @@ ${urls}
           ),
         )
       }
+
+      // ── guide library ──
+      // These pages deliberately drop the SPA bundle. React mounts into #root
+      // and would replace the prose with the tool; without the module script
+      // the article is simply the page, which is the entire point of writing
+      // them as files. The cost is that the header/footer here are static
+      // markup mirroring App.jsx rather than the components themselves.
+      const shellHead = html.slice(0, html.indexOf('</head>'))
+      const cssHref = (shellHead.match(/href="(\/assets\/[^"]+\.css)"/) || [])[1] || ''
+
+      const chrome = (bodyHtml) => `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+__HEAD__
+${cssHref ? `<link rel="stylesheet" href="${cssHref}" />` : ''}
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<script src="/consent.js" data-policy="/privacy/"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2164822493055530" crossorigin="anonymous"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-EW958DHTGX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-EW958DHTGX')</script>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){}</script>
+</head>
+<body class="bg-canvas text-ink">
+<header class="border-b border-hairline bg-canvas/90 backdrop-blur">
+  <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
+    <a href="/" class="text-sm font-semibold tracking-tight text-ink">Scam Website Checker</a>
+    <nav class="flex items-center gap-4 text-sm text-muted">
+      <a class="hover:text-ink" href="/${GUIDE_INDEX_ROUTE}/">Guides</a>
+      <a class="hover:text-ink" href="/">Check a site</a>
+    </nav>
+  </div>
+</header>
+${bodyHtml}
+<footer class="border-t border-hairline bg-canvas px-4 py-6 text-sm text-muted">
+  <div class="mx-auto max-w-6xl space-y-4">
+    <nav aria-label="Footer" class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end sm:gap-x-6 sm:gap-y-2">
+      <a class="py-1 hover:text-ink" href="/${GUIDE_INDEX_ROUTE}/">Guides</a>
+      <a class="py-1 hover:text-ink" href="/about/">About us</a>
+      <a class="py-1 hover:text-ink" href="/privacy/">Privacy policy</a>
+      <a class="py-1 hover:text-ink" href="/terms/">Terms &amp; conditions</a>
+      <a class="py-1 hover:text-ink" href="/contact/">Contact us</a>
+    </nav>
+    <div class="border-t border-hairline pt-4">
+      <p class="text-xs leading-5">Built to help you pause, verify, and browse more safely. Results are automated signals — not a legal verdict. Always verify independently before sharing personal or financial information.</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
+`
+
+      const head = (title, description, canonical, extra = '') =>
+        `<title>${attr(title)}</title>
+<meta name="description" content="${attr(description)}" />
+<link rel="canonical" href="${canonical}" />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="${attr(title)}" />
+<meta property="og:description" content="${attr(description)}" />
+<meta property="og:url" content="${canonical}" />
+<meta name="twitter:card" content="summary_large_image" />${extra}`
+
+      // Article pages
+      for (const g of GUIDES) {
+        const canonical = `${SITE_URL}/${GUIDE_INDEX_ROUTE}/${g.slug}/`
+        const jsonLd = {
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: g.title,
+          description: g.description,
+          dateModified: g.updated,
+          datePublished: g.updated,
+          mainEntityOfPage: canonical,
+          author: { '@type': 'Organization', name: 'Scam Website Checker' },
+          publisher: {
+            '@type': 'Organization',
+            name: 'Scam Website Checker',
+            url: `${SITE_URL}/`,
+          },
+        }
+        const body = `<main class="mx-auto max-w-3xl px-5 py-10 sm:px-8 sm:py-14">
+  <nav aria-label="Breadcrumb" class="mb-6 text-sm text-muted">
+    <a class="hover:text-ink" href="/">Home</a> <span aria-hidden="true">/</span>
+    <a class="hover:text-ink" href="/${GUIDE_INDEX_ROUTE}/">Guides</a>
+  </nav>
+  <article class="guide-article">
+    <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">${attr(g.title)}</h1>
+    <p class="mt-3 text-sm text-muted">Updated ${g.updated} · ${readingTime(g)} min read</p>
+    ${g.body}
+  </article>
+  <aside class="mt-12 rounded-lg border border-hairline bg-surface-raised p-5">
+    <p class="text-sm text-ink">Not sure about a specific website?</p>
+    <p class="mt-1 text-sm text-muted">Run it through the free checker — domain age, certificate, DNS and reputation listings in one pass.</p>
+    <a href="/" class="mt-3 inline-block rounded-md bg-primary px-4 py-2 text-sm font-semibold text-on-primary">Check a website</a>
+  </aside>
+</main>`
+        mkdirSync(resolve(dist, GUIDE_INDEX_ROUTE, g.slug), { recursive: true })
+        writeFileSync(
+          resolve(dist, GUIDE_INDEX_ROUTE, g.slug, 'index.html'),
+          chrome(body).replace(
+            '__HEAD__',
+            head(g.title, g.description, canonical) +
+              `\n<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`,
+          ),
+        )
+      }
+
+      // Index page
+      const indexCanonical = `${SITE_URL}/${GUIDE_INDEX_ROUTE}/`
+      const cards = GUIDES.map(
+        (g) => `    <li class="rounded-lg border border-hairline bg-surface p-5">
+      <h2 class="text-lg font-semibold leading-snug"><a class="text-ink hover:text-brand" href="/${GUIDE_INDEX_ROUTE}/${g.slug}/">${attr(g.title)}</a></h2>
+      <p class="mt-2 text-sm leading-6 text-muted">${attr(g.description)}</p>
+      <p class="mt-3 text-xs text-muted">${readingTime(g)} min read · updated ${g.updated}</p>
+    </li>`,
+      ).join('\n')
+      const indexBody = `<main class="mx-auto max-w-4xl px-5 py-10 sm:px-8 sm:py-14">
+  <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Guides</h1>
+  <p class="mt-3 max-w-2xl text-base leading-7 text-muted">Plain-English guides to checking whether a website is safe, recognising the common scam patterns, choosing payment methods you can reverse, and what to do if something has already gone wrong.</p>
+  <ul class="mt-8 grid gap-4 sm:grid-cols-2">
+${cards}
+  </ul>
+</main>`
+      mkdirSync(resolve(dist, GUIDE_INDEX_ROUTE), { recursive: true })
+      writeFileSync(
+        resolve(dist, GUIDE_INDEX_ROUTE, 'index.html'),
+        chrome(indexBody).replace(
+          '__HEAD__',
+          head(
+            'Guides — Scam Website Checker',
+            'Practical guides to spotting scam websites, fake online stores and phishing messages, choosing safer payment methods, and recovering after a scam.',
+            indexCanonical,
+          ),
+        ),
+      )
 
       // The 404 shell must never be indexable, whatever else happens.
       writeFileSync(

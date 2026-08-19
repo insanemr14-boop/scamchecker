@@ -24,12 +24,19 @@
   #   fonts.googleapis.com          the Inter stylesheet
   #   fonts.gstatic.com             the font files themselves
   #   scam-checker-api...workers.dev  the check API, including its SSE stream
+  #   pagead2.googlesyndication.com   AdSense, plus the doubleclick/adtrafficquality
+  #                                   origins its ad iframes and beacons use
+  #
+  # frame-src is listed explicitly because ad units render as cross-origin
+  # iframes; without it they fall back to default-src 'self' and are blocked.
+  # The AdSense tag was in index.html for some time before this line existed,
+  # which meant it silently never loaded.
   #
   # 'unsafe-inline' is required in script-src by the inline gtag config block,
   # and in style-src because React sets inline styles. If you ever change
   # VITE_API_BASE_URL, connect-src below must be updated to match or every scan
   # will fail silently with a CSP violation in the console.
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com; connect-src 'self' https://scam-checker-api.techgarg0.workers.dev https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com https://www.googletagservices.com https://adservice.google.com https://ep2.adtrafficquality.google; frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com https://ep2.adtrafficquality.google; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: https://www.googletagmanager.com https://*.google-analytics.com; connect-src 'self' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google https://csi.gstatic.com https://scam-checker-api.techgarg0.workers.dev https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com
 
 # Vite fingerprints everything in /assets, so the filename changes whenever the
 # content does. That makes it safe to cache permanently.
