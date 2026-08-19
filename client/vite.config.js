@@ -216,6 +216,43 @@ ${bodyHtml}
 </html>
 `
 
+      // End-of-guide capture. Consumer readers are a poor commercial fit for
+      // RioCloud, so this offers the business-facing service (domain and brand
+      // monitoring) rather than pretending a consumer needs an agency. The tool
+      // CTA stays alongside it, because that is the right next step for most
+      // readers and burying it would trade a useful action for a rare lead.
+      const leadForm = (slug) => `  <aside class="mt-12 rounded-lg border border-hairline bg-surface-raised p-5 sm:p-6">
+    <p class="text-base font-semibold text-ink">Not sure about a specific website?</p>
+    <p class="mt-1 text-sm leading-6 text-muted">Run it through the free checker — domain age, certificate, DNS and reputation listings in one pass.</p>
+    <a href="/" class="mt-3 inline-block rounded-md bg-primary px-4 py-2 text-sm font-semibold text-on-primary">Check a website</a>
+  </aside>
+  <section class="mt-6 rounded-lg border border-hairline bg-surface p-5 sm:p-6">
+    <h2 class="text-base font-semibold text-ink">Protecting a brand, not just a purchase?</h2>
+    <p class="mt-1 text-sm leading-6 text-muted">If people are being scammed by sites impersonating <em>your</em> business, we monitor for lookalike domains and get them taken down. Tell us the brand and we will run a first sweep for free.</p>
+    <form method="POST" action="https://dentistseo.dpdns.org/api/lead" class="mt-4">
+      <input type="hidden" name="site" value="${SITE_URL}" />
+      <input type="hidden" name="redirect" value="${SITE_URL}/thank-you/" />
+      <input type="hidden" name="source" value="/${GUIDE_INDEX_ROUTE}/${slug}/" />
+      <input type="hidden" name="subject" value="Brand protection enquiry — ${slug}" />
+      <div style="position:absolute;left:-9999px" aria-hidden="true">
+        <label>Leave this field empty<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <label class="block text-sm font-medium text-ink">Your name
+          <input class="mt-1 w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-ink" name="name" type="text" required autocomplete="name" />
+        </label>
+        <label class="block text-sm font-medium text-ink">Work email
+          <input class="mt-1 w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-ink" name="email" type="email" required autocomplete="email" />
+        </label>
+      </div>
+      <label class="mt-3 block text-sm font-medium text-ink">Which brand or domain?
+        <input class="mt-1 w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-ink" name="message" type="text" required />
+      </label>
+      <button type="submit" class="mt-4 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-on-primary">Request a free sweep</button>
+      <p class="mt-2 text-xs leading-5 text-muted">A person reads it and replies. No newsletter. See the <a class="underline" href="/privacy/">privacy policy</a>.</p>
+    </form>
+  </section>`
+
       const head = (title, description, canonical, extra = '') =>
         `<title>${attr(title)}</title>
 <meta name="description" content="${attr(description)}" />
@@ -255,11 +292,7 @@ ${bodyHtml}
     <p class="mt-3 text-sm text-muted">Updated ${g.updated} · ${readingTime(g)} min read</p>
     ${g.body}
   </article>
-  <aside class="mt-12 rounded-lg border border-hairline bg-surface-raised p-5">
-    <p class="text-sm text-ink">Not sure about a specific website?</p>
-    <p class="mt-1 text-sm text-muted">Run it through the free checker — domain age, certificate, DNS and reputation listings in one pass.</p>
-    <a href="/" class="mt-3 inline-block rounded-md bg-primary px-4 py-2 text-sm font-semibold text-on-primary">Check a website</a>
-  </aside>
+${leadForm(g.slug)}
 </main>`
         mkdirSync(resolve(dist, GUIDE_INDEX_ROUTE, g.slug), { recursive: true })
         writeFileSync(
