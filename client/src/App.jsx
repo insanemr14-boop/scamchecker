@@ -334,16 +334,22 @@ function ResultCard({ check, expanded, onToggle }) {
 }
 
 
+function BrandMark() {
+  return (
+    <a href="/" className="flex items-center gap-2.5 font-semibold tracking-tight text-ink" translate="no">
+      <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-blue-700 shadow-sm">
+        <ShieldCheck className="size-4 text-white" aria-hidden="true" />
+      </span>
+      <span className="text-sm sm:text-base">Scam<span className="text-brand">Checker</span></span>
+    </a>
+  )
+}
+
 function SiteHeader({ theme, setTheme }) {
   return (
     <header className="border-b border-hairline bg-canvas/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
-        <a href="/" className="flex items-center gap-2 text-sm font-semibold tracking-tight text-ink" translate="no">
-          <span className="grid size-7 place-items-center rounded-full bg-ink text-on-primary">
-            <ShieldCheck className="size-4" aria-hidden="true" />
-          </span>
-          Scam Website Checker
-        </a>
+        <BrandMark />
         <button
           type="button"
           aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
@@ -708,12 +714,7 @@ export default function App() {
       {/* ── HEADER ── */}
       <header className="sticky top-0 z-40 border-b border-hairline bg-canvas/95 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 sm:px-8">
-          <a href="/" className="flex items-center gap-2.5 font-semibold tracking-tight text-ink" translate="no">
-            <span className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-blue-700 shadow-sm">
-              <ShieldCheck className="size-4 text-white" aria-hidden="true" />
-            </span>
-            <span className="text-sm sm:text-base">Scam<span className="text-brand">Checker</span></span>
-          </a>
+          <BrandMark />
           <nav className="flex items-center gap-1 sm:gap-3">
             <a href="/how-it-works/" className="hidden rounded-lg px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink sm:inline-flex">How it works</a>
             <a href="/guides/" className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface-raised hover:text-ink">Blog</a>
