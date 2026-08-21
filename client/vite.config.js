@@ -191,7 +191,12 @@ ${cssHref ? `<link rel="stylesheet" href="${cssHref}" />` : ''}
 <body class="bg-canvas text-ink">
 <header class="border-b border-hairline bg-canvas/90 backdrop-blur">
   <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
-    <a href="/" class="text-sm font-semibold tracking-tight text-ink">Scam Website Checker</a>
+    <a href="/" class="flex items-center gap-2.5 text-sm font-semibold tracking-tight text-ink" translate="no">
+      <span class="flex size-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-blue-700 shadow-sm">
+        <svg class="size-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+      </span>
+      <span>Scam<span class="text-brand">Checker</span></span>
+    </a>
     <nav class="flex items-center gap-4 text-sm text-muted">
       <a class="hover:text-ink" href="/${GUIDE_INDEX_ROUTE}/">Blog</a>
       <a class="hover:text-ink" href="/contact/">Contact</a>
@@ -282,6 +287,12 @@ ${bodyHtml}
             '@type': 'Organization',
             name: 'Scam Website Checker',
             url: `${SITE_URL}/`,
+            logo: {
+              '@type': 'ImageObject',
+              url: `${SITE_URL}/logo.svg`,
+              contentUrl: `${SITE_URL}/logo.svg`,
+              caption: 'ScamChecker',
+            },
           },
         }
         const body = `<main class="mx-auto max-w-3xl px-5 py-10 sm:px-8 sm:py-14">
