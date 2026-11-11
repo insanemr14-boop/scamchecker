@@ -181,9 +181,9 @@ __HEAD__
 ${cssHref ? `<link rel="stylesheet" href="${cssHref}" />` : ''}
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<meta name="google-adsense-account" content="ca-pub-2164822493055530" />
+<meta name="google-adsense-account" content="ca-pub-3353662240978727" />
 <script src="/consent.js" data-policy="/privacy/"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2164822493055530" crossorigin="anonymous"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3353662240978727" crossorigin="anonymous"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-EW958DHTGX"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-EW958DHTGX')</script>
 <script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){}</script>
