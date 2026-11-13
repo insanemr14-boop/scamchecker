@@ -21,8 +21,11 @@ import domainAge from './what-domain-age-tells-you.js'
 import padlock from './https-and-ssl-what-the-padlock-proves.js'
 import payments from './safest-ways-to-pay-online.js'
 import scammed from './what-to-do-if-you-have-been-scammed-online.js'
+import holiday2026 from './holiday-shopping-scams-2026.js'
+import deliveryTexts from './fake-delivery-text-scams.js'
 
 export const GUIDES = [
+  holiday2026,
   howToTell,
   fakeStore,
   phishing,
@@ -31,6 +34,7 @@ export const GUIDES = [
   padlock,
   payments,
   scammed,
+  deliveryTexts,
 ]
 
 /** Rough reading time in minutes, from the rendered word count. */
