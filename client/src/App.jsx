@@ -5,6 +5,11 @@ import {
   MessageSquare, Moon, Search, ShieldCheck, ShieldAlert, Sun, XCircle
 } from 'lucide-react'
 import { PAGE_ROUTES, ROUTE_META } from './routes.js'
+import { PAGE_CONTENT } from './content/pages.js'
+import { HOME_FAQ } from './content/faq.js'
+
+/** Guide titles for the homepage, injected at build time by vite.config.js. */
+const GUIDE_LINKS = typeof __GUIDE_LINKS__ !== 'undefined' ? __GUIDE_LINKS__ : []
 import './App.css'
 
 const CHECK_TYPES = [
@@ -427,16 +432,7 @@ function LeadForm() {
 }
 
 function InfoPage({ kind, theme, setTheme }) {
-  const content = {
-    about: { eyebrow: 'About us', title: 'Make the safer choice before you click.', intro: 'Scam Website Checker is a practical, privacy-minded tool for checking the signals behind an unfamiliar website.', sections: [['Our mission', 'The web should be easier to navigate with confidence. We bring domain history, encryption, reputation, community discussion, threat intelligence, and DNS signals together in one readable report.'], ['How it works', 'Enter a domain or full URL and we run a set of independent checks. Results are indicators—not a guarantee—so you can slow down and make an informed decision.'], ['Our approach', 'We favor transparent evidence over a black-box verdict. Every result can be expanded to inspect the underlying details and source links.']] },
-    privacy: { eyebrow: 'Privacy policy', title: 'A clear view of how your data is handled.', intro: 'Last updated: July 28, 2026. This policy describes the information handled by Scam Website Checker.', sections: [['Information you provide', 'When you submit a website, the address is sent to our checker service so it can perform the requested analysis. We do not ask for accounts, passwords, payment details, or personal profiles.'], ['How we use information', 'Submitted addresses are used to run checks, return results, and temporarily cache repeated scans. Server logs may contain technical request information needed for reliability and security.'], ['Third-party services', 'Some checks query external services such as DNS providers, reputation databases, search providers, or community sites. Their own privacy policies apply to requests they receive.'], ['Retention and choices', 'Do not submit private, authenticated, or confidential URLs. Contact us if you have a question about a request or want to discuss deletion of server logs.']] },
-    terms: { eyebrow: 'Terms & conditions', title: 'Use the checker as a signal, not a guarantee.', intro: 'Last updated: July 28, 2026. By using this service, you agree to these terms.', sections: [['Informational service', 'Reports are automated and provided for general information and education. A "safe" or "low risk" result does not guarantee that a site is secure, legitimate, or free from fraud.'], ['Your responsibility', 'You are responsible for decisions made after reviewing a report. Verify payment requests, identity claims, downloads, and login pages through independent channels.'], ['Acceptable use', 'Do not use the service to probe systems you do not have permission to assess, submit confidential URLs, abuse external providers, or interfere with the service.'], ['Availability and changes', 'Checks depend on third-party data and may be incomplete or unavailable. We may improve, change, or discontinue features without notice.']] },
-    'how-it-works': { eyebrow: 'How it works', title: 'Check any website in 3 simple steps.', intro: 'Scam Website Checker is a free online tool that analyses six independent signals to help you decide if a website is safe, suspicious, or dangerous — no account required.', sections: [['Step 1 — Paste a website address', 'Type or paste any domain (e.g. example.com) or a full URL into the search box on the home page. The tool accepts both plain domains and complete web addresses starting with http:// or https://.'], ['Step 2 — We run 6 safety checks', 'Within seconds the tool queries six independent sources: Domain age and WHOIS registration history, SSL certificate validity and issuer, DNS security records including SPF and DMARC, threat intelligence databases (PhishTank, URLVoid, VirusTotal), Reddit community scam reports, and Google web reputation signals. Each check runs in parallel so results arrive fast.'], ['Step 3 — Read your safety report', 'You receive a Trust Score out of 100 and a colour-coded verdict: Low Risk, Use Caution, or High Risk. Every check card can be expanded to show raw scan data and links to external sources like WHOIS lookups, SSL Labs, and VirusTotal.'], ['Understanding the results', 'A Low Risk verdict means none of the checks found a concern. Use Caution means one or more signals are ambiguous. High Risk means multiple red flags were detected. The score is a guide — always verify sensitive requests independently before sharing money or personal information.'], ['Frequently asked questions', 'Is the tool free? Yes, completely free with no sign-up. How often is data updated? Each scan fetches live data. Can I check any website? Yes — any domain or URL worldwide, including UK sites (.co.uk). Is a low-risk score a guarantee? No. It is an automated screening tool, not a legal verdict.']] },
-    contact: { eyebrow: 'Contact us', title: 'Questions, feedback, or a false positive?', intro: 'Tell us what happened and include enough context for us to understand the issue. Please do not send passwords, payment details, or private URLs.', sections: [['Email', 'For support, feedback or a false positive, email info@riocloudsolutions.com or call +91 75085 83782. We reply within 2\u20134 hours during business hours, Monday to Saturday, 9:00\u201319:00 IST.'], ['What to include', 'Share the domain, approximate time of the scan, what you expected to see, and any relevant error message. Redact personal or confidential information before sending.'], ['Who runs this tool', 'Scam Website Checker is built and operated by RioCloud Solutions, a technology and digital services company based in Chandigarh, India. The same team builds and secures websites and cloud infrastructure for clients.']] },
-    '404': { eyebrow: 'Error 404', title: 'Page not found.', intro: 'We could not find the page you were looking for. It may have been moved, renamed, or it never existed in the first place.', sections: [['What you can do', 'Use the home page to check any website for scam signals. The address bar may have a typo — try correcting it.'], ['Need help?', 'If you reached this page from one of our links, we would appreciate a heads-up so we can fix it. Use the contact page to send the broken URL.']] },
-    'thank-you': { eyebrow: 'Thank you', title: 'Message received.', intro: 'Thanks for getting in touch. Your message has landed in our inbox and a real person will read it.', sections: [['What happens next', 'We reply to enquiries within 2\u20134 hours during business hours, Monday to Saturday, 9:00\u201319:00 IST. If it is urgent, email info@riocloudsolutions.com or call +91 75085 83782.'], ['While you are here', 'You can run another website safety check from the home page, or read how the six checks work on the How it works page.']] },
-    '500': { eyebrow: 'Error 500', title: 'Something went wrong on our end.', intro: 'The server hit an unexpected error while handling your request. The issue has been logged and we are looking into it.', sections: [['Try again', 'Most temporary errors clear within a minute. Refresh the page or return to the home page and try again.'], ['Still broken?', 'If the error keeps happening, please report it via the contact page and include the time, the page you were on, and what you were trying to do.']] },
-  }[kind]
+  const content = PAGE_CONTENT[kind]
 
   // index.html ships the homepage's title, description and canonical. Without
   // this, all six routes would serve those same tags and read to a crawler as
@@ -929,99 +925,31 @@ export default function App() {
             <p className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">You may already search using a <strong>scam website checker Reddit</strong> query, or run a <strong>Google scam website checker</strong> search to find complaint threads. Our <strong>scam website checker tool</strong> does this automatically, combining community intelligence with technical checks. Reddit discussions often surface scam patterns months before formal databases catch up.</p>
             <p className="mt-4 text-sm leading-6 text-muted">Ready to verify a link? Paste any address into the <strong>scam website checker online</strong> tool above. It takes under 30 seconds to get a full report - and those 30 seconds could save you from a costly mistake.</p>
 
-            <div className="mt-8 pt-6 border-t border-hairline" aria-labelledby="related-searches-heading">
-              <h3 id="related-searches-heading" className="text-lg font-semibold tracking-tight text-ink">Related searches & popular queries</h3>
-              <p className="mt-3 text-sm leading-7 text-muted">People also search for:</p>
-              <ul className="mt-3 flex flex-wrap gap-2 text-sm" role="list">
-                <li><strong className="text-ink">Fake website checker free</strong></li>
-                <li><strong className="text-ink">Website trust check</strong></li>
-                <li><strong className="text-ink">Scam checker</strong></li>
-                <li><strong className="text-ink">Best fake website checker free</strong></li>
-                <li><strong className="text-ink">Best scam website checker</strong></li>
-                <li><strong className="text-ink">Website safety checker</strong></li>
-                <li><strong className="text-ink">Website checker ScamAdviser</strong></li>
-                <li><strong className="text-ink">Scam website report</strong></li>
+            <section className="mt-8 pt-6 border-t border-hairline" aria-labelledby="guides-heading">
+              <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-brand">From the blog</p>
+              <h3 id="guides-heading" className="mt-2 text-2xl font-semibold tracking-[-0.045em] text-ink sm:text-3xl">Guides to staying safe online</h3>
+              <ul className="mt-4 grid gap-4 sm:grid-cols-2" role="list">
+                {GUIDE_LINKS.map((g) => (
+                  <li key={g.slug} className="rounded-xl border border-hairline bg-surface p-4">
+                    <a href={`/guides/${g.slug}/`} className="text-base font-semibold text-ink hover:text-brand">{g.title}</a>
+                    <p className="mt-1 text-sm leading-6 text-muted">{g.description}</p>
+                  </li>
+                ))}
               </ul>
-              <p className="mt-4 text-sm leading-6 text-muted">Each of these searches leads back to the same reliable, multi-signal analysis our tool provides - no matter what you call it, the safety checks remain thorough and transparent.</p>
-            </div>
+              <a href="/guides/" className="mt-4 inline-block text-sm font-semibold text-brand hover:underline">See all guides</a>
+            </section>
 
             <section className="mt-8 pt-6 border-t border-hairline" aria-labelledby="faq-heading">
               <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-brand">FAQ</p>
               <h3 id="faq-heading" className="mt-2 text-2xl font-semibold tracking-[-0.045em] text-ink sm:text-3xl">Frequently Asked Questions</h3>
               <p className="mt-3 text-sm leading-7 text-muted sm:text-base sm:leading-8">The questions people ask us most often about checking websites for scams, phishing, and fraud.</p>
               <dl className="mt-4 divide-y divide-hairline" role="list">
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">How can I tell if a website is a scam?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">Watch for red flags like poor design, typos, missing contact information, unusual URLs (misspelled brand names, extra characters, odd domain extensions such as .xyz, .top, or .click), no HTTPS padlock, and deals that look too good to be true. Our scam website checker checks the technical red flags automatically.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">How do I check if a website is legitimate?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">Verify the domain on WHOIS, confirm the SSL certificate is valid, search for reviews on Trustpilot and SiteJabber, check Google Safe Browsing, and inspect the business on its official registry. Paste the URL into our scam website checker to run all of these checks in one go.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">What are the signs of a phishing website?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">Phishing sites use urgency ("act now or your account will be closed"), links that don't match the visible text, requests for passwords, banking details, or one-time codes, and generic greetings like "Dear Customer". Our tool flags known phishing domains and surfaces Reddit and threat-intelligence warnings.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">Can I get a virus just by visiting a website?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">Yes. Drive-by downloads and malicious scripts can infect devices even without clicking anything, especially on unpatched browsers. Always keep your browser and OS up to date and avoid sites flagged by our threat-intelligence check (PhishTank, URLVoid, VirusTotal).</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">How do I report a scam website?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">Report the site to Google Safe Browsing, the FTC at reportfraud.ftc.gov (US), Action Fraud (UK), the IC3 Internet Crime Complaint Center, and the hosting provider or domain registrar. Many of these accept reports directly from URLs surfaced in our check report.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">What should I do if I already entered my information on a scam site?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">Change passwords immediately, contact your bank or credit-card company, enable two-factor authentication on important accounts, monitor your credit reports, and place a fraud alert with the credit bureaus. Do not delay — the first hour is the most important.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">Are .com sites safer than other extensions?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">No. While .com is the most common extension, scam sites use every TLD (.top, .click, .xyz, .country, etc.). The extension alone does not indicate legitimacy. Always check the actual signals — domain age, SSL, DNS, reputation.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">How do I verify a company is real?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">Check official business-registration databases (Companies House in the UK, Secretary of State in the US, MCA in India), look for a physical address and verifiable phone number, search "[company name] scam" or "[company name] review", inspect their SSL certificate, and review their social-media age and activity. Our checker aggregates many of these signals in one place.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">What's the difference between a scam website and a fraudulent website?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">The terms are often used interchangeably. "Scam" generally refers to deception for financial or personal gain (fake stores, phishing, investment fraud). "Fraudulent" is a legal term for intentional misrepresentation that causes harm. Both should be treated as unsafe until proven otherwise.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">How do I spot a fake online store?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">Huge discounts on luxury brands, a recently registered domain (check WHOIS), limited or unusual payment options (wire transfer, crypto only), missing return policy, and stock photos used in place of real product images. Our checker flags most of these in a single report.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">How to check if a link is a scam in India?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">The process is the same worldwide. Paste the link into our scam website checker — it works on .in, .co.in, and any international domain. The checks are technical and reputation-based, so they apply equally to Indian e-commerce, banking, government lookalike, UPI, and investment scam sites.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">What is a free scam checker?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">A free scam checker is an online tool that lets you analyse a website for scam signals without paying, creating an account, or installing software. Our free scam website checker includes all six checks (domain age, SSL, DNS, threat databases, Reddit, web reputation) with no daily limits.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">How do I check a website for scams?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">Copy the website address, paste it into the search box above, and click "Check Website". Within seconds you will see a Trust Score (0–100), a colour-coded verdict (Low Risk / Use Caution / High Risk), and expandable details for each of the six checks with links to external verification sources.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">What is a scam website checker?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">A scam website checker is an automated safety tool that aggregates multiple independent data sources — domain registration records, SSL certificates, DNS configuration, malware/phishing databases, community forums, and search engine signals — to help you decide whether a site is trustworthy before you interact with it.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">How to check if a website is scam or not?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">Use a multi-signal checker like ours. No single indicator is perfect, but combining domain age, encryption, DNS security, threat databases, community reports, and search reputation gives a far more reliable picture than any one check alone.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">What will a bank never ask you?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">A legitimate bank will never ask for your full PIN, online banking password, OTP sent to your phone/email, CVV/CVC from the back of your card, or to transfer money to a "safe account". Banks will not send unsolicited links asking you to log in, nor pressure you to act immediately. If you receive such requests, it is a scam.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">How to check scammer website?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">Run the suspicious domain through our tool. Pay special attention to: domain age under 30 days (red flag), missing or self-signed SSL, absent SPF/DMARC records, hits on PhishTank or VirusTotal, and Reddit threads warning about the same domain. Two or more red flags = High Risk.</dd>
-                </div>
-                <div className="py-5">
-                  <dt className="text-base font-semibold text-ink">How to verify a scam site?</dt>
-                  <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">Verification means cross-checking: (1) Check WHOIS registration date and registrar, (2) Validate the SSL certificate on SSL Labs, (3) Search the domain on PhishTank, URLVoid, and VirusTotal, (4) Look for Reddit discussions, (5) Search Google for "[domain] scam" or "[domain] review". Our tool automates all of this in one click.</dd>
-                </div>
+                {HOME_FAQ.map(({ q, a }) => (
+                  <div key={q} className="py-5">
+                    <dt className="text-base font-semibold text-ink">{q}</dt>
+                    <dd className="mt-2 text-sm leading-7 text-muted sm:text-base sm:leading-8">{a}</dd>
+                  </div>
+                ))}
               </dl>
             </section>
           </div>

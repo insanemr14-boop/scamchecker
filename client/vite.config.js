@@ -6,6 +6,11 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { INFO_ROUTES, ERROR_ROUTES, UTILITY_ROUTES, SITEMAP_ROUTES, ROUTE_META, GUIDE_INDEX_ROUTE } from './src/routes.js'
 import { GUIDES, readingTime } from './src/content/guides/index.js'
+import { PAGE_CONTENT } from './src/content/pages.js'
+import { HOME_FAQ } from './src/content/faq.js'
+
+/** Guide links shown on the homepage; also baked into the bundle via `define`. */
+const GUIDE_LINKS = GUIDES.slice(0, 6).map(({ slug, title, description }) => ({ slug, title, description }))
 
 /**
  * Canonical origin for this build, without a trailing slash.
@@ -133,6 +138,62 @@ ${urls}
       const html = readFileSync(shell, 'utf8')
       const attr = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
 
+      const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      const ldBlock = (type) =>
+        new RegExp(`<script type="application/ld\\+json">\\s*\\{\\s*"@context": "https://schema\\.org",\\s*"@type": "${type}"[\\s\\S]*?</script>\\s*`)
+      const ld = (obj) => `<script type="application/ld+json">${JSON.stringify(obj)}</script>\n    `
+
+      // Crawlable copy of each page, written inside #root. createRoot() replaces
+      // it on mount, so visitors see the React page; crawlers that do not run
+      // JavaScript get the same text, a real <h1> and real links.
+      const siteNav = `<nav aria-label="Site" class="mt-10 flex flex-wrap gap-x-5 gap-y-2 border-t border-hairline pt-6 text-sm text-muted">
+  <a href="/">Check a website</a><a href="/how-it-works/">How it works</a><a href="/${GUIDE_INDEX_ROUTE}/">Blog</a><a href="/about/">About us</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy policy</a><a href="/terms/">Terms</a>
+</nav>`
+      const guideList = `<ul class="mt-4 grid gap-4 sm:grid-cols-2">
+${GUIDE_LINKS.map((g) => `  <li><a href="/${GUIDE_INDEX_ROUTE}/${g.slug}/">${esc(g.title)}</a><p>${esc(g.description)}</p></li>`).join('\n')}
+</ul>`
+      const staticInfo = (route) => {
+        const c = PAGE_CONTENT[route]
+        if (!c) return ''
+        const sections = (c.sections || [])
+          .filter((s) => Array.isArray(s) && typeof s[1] === 'string')
+          .map(([h, body]) => `<h2>${esc(h)}</h2>\n<p>${esc(body)}</p>`)
+          .join('\n')
+        return `<main class="mx-auto max-w-3xl px-5 py-10 sm:px-8 sm:py-14">
+<p>${esc(c.eyebrow)}</p>
+<h1>${esc(c.title)}</h1>
+<p>${esc(c.intro)}</p>
+${sections}
+${siteNav}
+</main>`
+      }
+      const staticHome = `<main class="mx-auto max-w-3xl px-5 py-10 sm:px-8 sm:py-14">
+<h1>Is This Website a Scam or Legit?</h1>
+<p>Our free scam website checker analyses domain age, SSL, DNS, reputation databases, Reddit reports, and threat intelligence in one instant scan.</p>
+<ul><li>Domain age</li><li>SSL check</li><li>Threat intelligence</li><li>DNS security</li><li>Reddit reports</li><li>Web reputation</li></ul>
+<h2>Guides to staying safe online</h2>
+${guideList}
+<p><a href="/${GUIDE_INDEX_ROUTE}/">See all guides</a></p>
+<h2>Frequently Asked Questions</h2>
+<dl>
+${HOME_FAQ.map(({ q, a }) => `<dt>${esc(q)}</dt><dd>${esc(a)}</dd>`).join('\n')}
+</dl>
+${siteNav}
+</main>`
+      const faqLd = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: HOME_FAQ.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+      }
+      const crumbLd = (route) => ({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+          ...(route ? [{ '@type': 'ListItem', position: 2, name: ROUTE_META[route]?.title.split(' – ')[0] || route, item: `${SITE_URL}/${route}/` }] : []),
+        ],
+      })
+
       const render = (route) => {
         const meta = ROUTE_META[route]
         return html
@@ -145,6 +206,12 @@ ${urls}
             /<link rel="canonical" href="[^"]*"\s*\/?>/,
             `<link rel="canonical" href="${SITE_URL}/${route}/" />`,
           )
+          // Only the homepage is the tool and carries its FAQ; other pages get
+          // their own breadcrumb instead of copies of the homepage's data.
+          .replace(ldBlock('WebApplication'), '')
+          .replace(ldBlock('FAQPage'), '')
+          .replace(ldBlock('BreadcrumbList'), ld(crumbLd(route)))
+          .replace('<div id="root"></div>', `<div id="root">${staticInfo(route)}</div>`)
       }
 
       for (const route of INFO_ROUTES) {
@@ -328,7 +395,7 @@ ${leadForm(g.slug)}
     </li>`,
       ).join('\n')
       const indexBody = `<main class="mx-auto max-w-4xl px-5 py-10 sm:px-8 sm:py-14">
-  <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Blog</h1>
+  <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Scam Prevention Guides</h1>
   <p class="mt-3 max-w-2xl text-base leading-7 text-muted">Plain-English guides to checking whether a website is safe, recognising the common scam patterns, choosing payment methods you can reverse, and what to do if something has already gone wrong.</p>
   <ul class="mt-8 grid gap-4 sm:grid-cols-2">
 ${cards}
@@ -340,11 +407,19 @@ ${cards}
         chrome(indexBody).replace(
           '__HEAD__',
           head(
-            'Blog — Scam Website Checker',
+            'Scam Prevention Guides: Spot Fake Websites and Online Scams | Scam Website Checker',
             'Practical guides to spotting scam websites, fake online stores and phishing messages, choosing safer payment methods, and recovering after a scam.',
             indexCanonical,
           ),
         ),
+      )
+
+      // Homepage: FAQ data generated from the visible FAQ, plus crawlable copy.
+      writeFileSync(
+        shell,
+        html
+          .replace(ldBlock('FAQPage'), ld(faqLd))
+          .replace('<div id="root"></div>', `<div id="root">${staticHome}</div>`),
       )
 
       // The 404 shell must never be indexable, whatever else happens.
@@ -361,6 +436,7 @@ ${cards}
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), siteUrlPlugin(), seoFilesPlugin()],
+  define: { __GUIDE_LINKS__: JSON.stringify(GUIDE_LINKS) },
   server: {
     port: 3000,
     proxy: {

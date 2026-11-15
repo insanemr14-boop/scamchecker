@@ -107,3 +107,12 @@ RAYON_NUM_THREADS=1 npm run build --workspace=client
 ```
 
 Cloudflare's build runners are unaffected — this is a local-only workaround.
+
+## Crawlable HTML for SPA pages
+
+The homepage and info pages are React, so their served HTML used to be an empty
+`<div id="root">`. `seoFilesPlugin` now writes each page's real text inside
+`#root` at build time (React replaces it on mount). Page text lives in
+`client/src/content/pages.js`, the homepage FAQ in `client/src/content/faq.js`;
+both feed the React pages and the build, so edit them there, not in `App.jsx`.
+The FAQPage JSON-LD is generated from `faq.js` and only appears on the homepage.
